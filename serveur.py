@@ -1,27 +1,15 @@
 import socket
-import threading
+ADDR = '127.0.0.1'
+PORT = 45123
 
-host = '027.0.0.1'
-port = 1234
-LISTENER_LIMIT = 5
+server = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
+server.bind((ADDR,PORT))
+server.listen(5)
+print(f"[info] server started with IP {ADDR} on port {PORT}.")
 
-def main():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    try:
-        server.bind((host , port))
-        print(f"running the server on {host} {port}")
-
-    except:
-        print(f"unable to bind to host {host} and port {port}")
-
-        server.listen(LISTENER_LIMIT)    
-
-        while 1 :
-            client, adress = server.accept()
-            print(f"Successfully connected to client {adress[0]} {adress[1]}")
-
-if __name__ == "__main__":
-    main()
-
+while True:
+    communication_socket, dest_ip = server.accept()
+    print(f"[info] {dest_ip} esteblished a connection to the server.")
+    message = communication_socket.recv(5).decode('utf-8')
+    print(f"[Message from {dest_ip[0]} : {dest_ip[1]} {message}]")
 

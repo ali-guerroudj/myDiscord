@@ -1,19 +1,8 @@
 import socket
-import threading
+TARGET_IP = '127.0.0.1'
+TARGET_PORT = 45123
 
-host = '127.0.0.1'
-port = 1234
+client = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
 
-def main():
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    try :
-        client.connect((host,port))
-        print(f"connecte avec succes")
-
-    except:
-        print(f"unable to connect to server  {host} {port}")
-
-
-if __name__ == '__main__':
-    main()            
+client.connect((TARGET_IP , TARGET_PORT))
+client.send(input(). encode('utf-8'))
