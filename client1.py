@@ -77,7 +77,7 @@ class Client:
                         self.text_area.config(state="normal")
                         message_with_emoji = self.emoji_replace(message.decode("utf-8"))
                         self.text_area.insert(tkinter.END, message_with_emoji)
-                        self.text_area.insert(tkinter.END, "\n")
+                        self.text_area.insert(tkinter.END, "\U0001F60A")
                         self.text_area.yview(tkinter.END)
                         self.text_area.config(state="disabled")
             except ConnectionAbortedError:
