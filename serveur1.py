@@ -5,9 +5,9 @@ HOST = '127.0.0.1'
 PORT = 45678
 
 server = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
-server.bind((HOST, PORT))
+server.bind((HOST, PORT)) # On passe un tuple avec nos informations
 
-server.listen()
+server.listen() # on n'autorise la connexion simultanées sur le serveur 
 
 clients = []
 surnoms = []
@@ -36,7 +36,7 @@ def recevoir():
         client , adress = server.accept()
         print(f"Connecté avec {str(adress)}")
 
-        client.send("SURNOM".encode("utf-8"))
+        client.send("SURNOM".encode("utf-8")) # le encode(utf-8) signifie qu'on veux convertir les donnees envoyeez en bits pour qu'elles soient lisible pour nous.
         surnom = client.recv(1024)
 
         surnoms.append(surnom)

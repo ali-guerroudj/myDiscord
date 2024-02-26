@@ -3,6 +3,7 @@ import threading
 import tkinter
 import tkinter.scrolledtext
 from tkinter import simpledialog
+import emoji
 
 HOST = '127.0.0.1'
 PORT = 45678
@@ -74,15 +75,21 @@ class Client:
                 else:
                     if self.gui_done:
                         self.text_area.config(state="normal")
-                        self.text_area.insert("end", message.decode("utf-8"))
-                        self.text_area.yview("end")
+                        message_with_emoji = self.emoji_replace(message.decode("utf-8"))
+                        self.text_area.insert(tkinter.END, message_with_emoji)
+                        self.text_area.insert(tkinter.END, "\n")
+                        self.text_area.yview(tkinter.END)
                         self.text_area.config(state="disabled")
             except ConnectionAbortedError:
                 break
-            except:
-                print("Erreur")
+            except Exception as e:
+                print("Erreur:", e)
                 self.sock.close()
                 break
+
+    def emoji_replace(self, text):
+        # Remplace les alias d'emoji par les caractères correspondants
+        return emoji.demojize(text, delimiters=('', ''))
 
 Client = Client(HOST, PORT)
 
