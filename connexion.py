@@ -1,4 +1,6 @@
 import pygame
+import mysql.connector
+from mysql.connector import connect, Error
 
 # Initialisation de Pygame
 pygame.init()
@@ -55,6 +57,35 @@ bouton_hauteur = 50
 couleur_bouton_normal = (50, 205, 50)  # Vert
 couleur_bouton_survol = (0, 255, 0)     # Vert clair
 
+# Fonction pour établir la connexion à la base de données
+def connecter_bdd():
+    try:
+        conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="conan",  # Remplacez par votre mot de passe
+            database="mydiscord",
+            auth_plugin='mysql_native_password'
+        )
+        return conn
+    except Error as e:
+        print(f"Erreur de connexion à la base de données: {e}")
+        return None
+
+# Fonction pour vérifier l'authentification de l'utilisateur
+def verifier_authentification(conn, email, mot_de_passe):
+    try:
+        cursor = conn.cursor()
+        select_query = "SELECT * FROM utilisateur WHERE Email = %s AND Mot_de_passe = %s"
+        cursor.execute(select_query, (email, mot_de_passe))
+        utilisateur = cursor.fetchone()
+        if utilisateur:
+            print("Authentification réussie !")
+        else:
+            print("Nom d'utilisateur ou mot de passe incorrect.")
+    except Error as e:
+        print(f"Erreur lors de la vérification de l'authentification: {e}")
+
 # Boucle principale du jeu
 launched = True
 while launched:
@@ -65,12 +96,12 @@ while launched:
             if active_field == 'email':
                 if event.key == pygame.K_BACKSPACE:
                     email_text = email_text[:-1]  # Supprimer le dernier caractère
-                elif len(email_text) < 20:
+                elif len(email_text) < 100:
                     email_text += event.unicode
             elif active_field == 'password':
                 if event.key == pygame.K_BACKSPACE:
                     mdp_text = mdp_text[:-1]  # Supprimer le dernier caractère
-                elif len(mdp_text) < 20:
+                elif len(mdp_text) < 100:
                     mdp_text += event.unicode
 
         # Gérer le focus sur les champs de saisie
@@ -87,6 +118,14 @@ while launched:
             # Vérifier si la souris est cliquée sur le bouton de connexion
             if bouton_x < event.pos[0] < bouton_x + bouton_largeur and bouton_y < event.pos[1] < bouton_y + bouton_hauteur:
                 print("Bouton de connexion cliqué !")  # Ici, vous pouvez ajouter votre logique de connexion
+                
+                # Établir une connexion à la base de données
+                conn = connecter_bdd()
+                if conn:
+                    # Vérifier l'authentification de l'utilisateur
+                    verifier_authentification(conn, email_text, mdp_text)
+                    # Fermer la connexion
+                    conn.close()
 
     # Effacer l'écran
     window_surface.fill(BLANC)

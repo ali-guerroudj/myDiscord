@@ -1,4 +1,8 @@
 import pygame
+import mysql.connector
+from mysql.connector import connect, Error
+
+# Initialisation de Pygame
 pygame.init()
 
 # Définition des couleurs
@@ -12,7 +16,7 @@ res = (940, 800)
 
 # Création de la fenêtre
 window_surface = pygame.display.set_mode(res)
-pygame.display.set_caption("Fenêtre de Connexion")
+pygame.display.set_caption("Fenêtre d'inscription")
 
 # Police de texte avec une taille spécifique
 font = pygame.font.SysFont(None, 36)
@@ -53,6 +57,33 @@ bouton_hauteur = 50
 couleur_bouton_normal = (50, 205, 50)  # Vert
 couleur_bouton_survol = (0, 255, 0)     # Vert clair
 
+# Fonction pour établir la connexion à la base de données
+def connecter_bdd():
+    try:
+        conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="conan",  # Remplacez par votre mot de passe
+            database="mydiscord",
+            auth_plugin='mysql_native_password'
+        )
+        return conn
+    except Error as e:
+        print(f"Erreur de connexion à la base de données: {e}")
+        return None
+
+# Fonction pour insérer un nouvel utilisateur dans la base de données
+def inserer_utilisateur(conn, email, mot_de_passe):
+    try:
+        cursor = conn.cursor()
+        insert_query = "INSERT INTO utilisateur (Email, Mot_de_passe) VALUES (%s, %s)"
+        values = (email, mot_de_passe)
+        cursor.execute(insert_query, values)
+        conn.commit()
+        print("Utilisateur inséré avec succès !")
+    except Error as e:
+        print(f"Erreur lors de l'insertion de l'utilisateur dans la base de données: {e}")
+
 # Boucle principale du jeu
 launched = True
 while launched:
@@ -63,12 +94,12 @@ while launched:
             if active_field == 'email':
                 if event.key == pygame.K_BACKSPACE:
                     email_text = email_text[:-1]  # Supprimer le dernier caractère
-                elif len(email_text) < 20:
+                elif len(email_text) < 100:
                     email_text += event.unicode
             elif active_field == 'password':
                 if event.key == pygame.K_BACKSPACE:
                     mdp_text = mdp_text[:-1]  # Supprimer le dernier caractère
-                elif len(mdp_text) < 20:
+                elif len(mdp_text) < 100:
                     mdp_text += event.unicode
 
         # Gérer le focus sur les champs de saisie
@@ -85,6 +116,14 @@ while launched:
             # Vérifier si la souris est cliquée sur le bouton de connexion
             if bouton_x < event.pos[0] < bouton_x + bouton_largeur and bouton_y < event.pos[1] < bouton_y + bouton_hauteur:
                 print("Bouton de connexion cliqué !")  # Ici, vous pouvez ajouter votre logique de connexion
+                
+                # Établir une connexion à la base de données
+                conn = connecter_bdd()
+                if conn:
+                    # Insérer l'utilisateur dans la base de données
+                    inserer_utilisateur(conn, email_text, mdp_text)
+                    # Fermer la connexion
+                    conn.close()
 
     # Effacer l'écran
     window_surface.fill(BLANC)
@@ -94,7 +133,7 @@ while launched:
 
     # Afficher le carré de connexion
     pygame.draw.rect(window_surface, violetred4, (carré_x, carré_y, carré_largeur, carré_hauteur))
-    text_connexion = font.render("CONNEXION", True, BLANC)
+    text_connexion = font.render("inscription", True, BLANC)
     window_surface.blit(text_connexion, (carré_x + 50, carré_y + 40))
 
     # Afficher les champs de saisie avec le texte saisi
@@ -118,17 +157,6 @@ while launched:
     pygame.draw.rect(window_surface, couleur_bouton_normal, (bouton_x, bouton_y, bouton_largeur, bouton_hauteur))
     text_bouton = font.render("Connexion", True, BLANC)
     window_surface.blit(text_bouton, (bouton_x + 50, bouton_y + 15))
-
-    # Faire clignoter le curseur
-    if pygame.time.get_ticks() - last_blink >= BLINK_TIME:  # Chaque 500 millisecondes
-        cursor_visible = not cursor_visible
-        last_blink = pygame.time.get_ticks()
-
-    if cursor_visible and active_field:
-        cursor_rect = pygame.Rect(carré_x + 105 + font.size(email_text if active_field == 'email' else mdp_text)[0],
-                                 carré_y + 105 if active_field == 'email' else carré_y + 175, 2,
-                                 font.size(email_text if active_field == 'email' else mdp_text)[1])
-        pygame.draw.rect(window_surface, NOIR, cursor_rect)
 
     # Actualiser l'affichage
     pygame.display.flip()
