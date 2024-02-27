@@ -74,10 +74,20 @@ class Client:
                     self.sock.send(self.surnom.encode("utf-8"))
                 else:
                     if self.gui_done:
+                      if message.decode("utf-8") not in self.text_area.get("1.0", tkinter.END):   
                         self.text_area.config(state="normal")
+
+                        self.text_area.tag_configure("right", justify="right") # ajouter un message recu avec alignement a droite
+                        self.text_area.insert(tkinter.END, message.decode("utf-8") + "\n","right")
+
+                        self.text_area.tag_configure("left",justify="left") #  Ajouter un message de l'utilisateur avec alignement à gauche
+                        self.text_area.insert(tkinter.END, "\n", "left")
+
                         message_with_emoji = self.emoji_replace(message.decode("utf-8"))
                         self.text_area.insert(tkinter.END, message_with_emoji)
                         self.text_area.insert(tkinter.END, "\U0001F60A")
+                        self.text_area.insert(tkinter.END, "\U00002764")
+                        self.text_area.insert(tkinter.END, "\U0001F44D")
                         self.text_area.yview(tkinter.END)
                         self.text_area.config(state="disabled")
             except ConnectionAbortedError:
@@ -90,6 +100,7 @@ class Client:
     def emoji_replace(self, text):
         # Remplace les alias d'emoji par les caractères correspondants
         return emoji.demojize(text, delimiters=('', ''))
+
 
 Client = Client(HOST, PORT)
 

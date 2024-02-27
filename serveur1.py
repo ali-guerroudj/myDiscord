@@ -43,8 +43,8 @@ def recevoir():
         clients.append(client)
 
         print(f"Surnom du client : {surnom}")
-        broadcast(f"{surnom} connecté au serveur\n".encode("utf-8"))
-        client.send("Connecté au serveur".encode("utf-8"))
+        broadcast(f"{surnom} \n".encode("utf-8"))
+        client.send("".encode("utf-8"))
 
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
