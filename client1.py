@@ -67,35 +67,38 @@ class Client:
         exit(0)
 
     def recevoir(self):
-        while self.running:
-            try:
-                message = self.sock.recv(1024)
-                if message == "SURNOM":
-                    self.sock.send(self.surnom.encode("utf-8"))
-                else:
-                    if self.gui_done:
-                      if message.decode("utf-8") not in self.text_area.get("1.0", tkinter.END):   
+      messages_recus = set()  # Utiliser un ensemble pour éviter les doublons
+      while self.running:
+        try:
+            message = self.sock.recv(1024)
+            if message == "SURNOM":
+                self.sock.send(self.surnom.encode("utf-8"))
+            else:
+                if self.gui_done:
+                    message_text = message.decode("utf-8")
+                    if message_text not in messages_recus:
                         self.text_area.config(state="normal")
 
-                        self.text_area.tag_configure("right", justify="right") # ajouter un message recu avec alignement a droite
-                        self.text_area.insert(tkinter.END, message.decode("utf-8") + "\n","right")
+                        self.text_area.tag_configure("right", justify="right")
+                        self.text_area.insert(tkinter.END, message_text + "\n", "right")
 
-                        self.text_area.tag_configure("left",justify="left") #  Ajouter un message de l'utilisateur avec alignement à gauche
+                        self.text_area.tag_configure("left", justify="left")
                         self.text_area.insert(tkinter.END, "\n", "left")
 
-                        message_with_emoji = self.emoji_replace(message.decode("utf-8"))
+                        message_with_emoji = self.emoji_replace(message_text)
                         self.text_area.insert(tkinter.END, message_with_emoji)
                         self.text_area.insert(tkinter.END, "\U0001F60A")
                         self.text_area.insert(tkinter.END, "\U00002764")
                         self.text_area.insert(tkinter.END, "\U0001F44D")
                         self.text_area.yview(tkinter.END)
                         self.text_area.config(state="disabled")
-            except ConnectionAbortedError:
-                break
-            except Exception as e:
-                print("Erreur:", e)
-                self.sock.close()
-                break
+                        messages_recus.add(message_text)  # Ajouter le message à l'ensemble des messages reçus
+        except ConnectionAbortedError:
+            break
+        except Exception as e:
+            print("Erreur:", e)
+            self.sock.close()
+            break
 
     def emoji_replace(self, text):
         # Remplace les alias d'emoji par les caractères correspondants
@@ -103,6 +106,7 @@ class Client:
 
 
 Client = Client(HOST, PORT)
+
 
 
          
