@@ -63,7 +63,7 @@ def connecter_bdd():
         conn = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="conan",  # Remplacez par votre mot de passe
+            password="conan",
             database="mydiscord",
             auth_plugin='mysql_native_password'
         )
@@ -72,11 +72,12 @@ def connecter_bdd():
         print(f"Erreur de connexion à la base de données: {e}")
         return None
 
+
 # Fonction pour insérer un nouvel utilisateur dans la base de données
 def inserer_utilisateur(conn, email, mot_de_passe):
     try:
         cursor = conn.cursor()
-        insert_query = "INSERT INTO utilisateur (Email, Mot_de_passe) VALUES (%s, %s)"
+        insert_query = "INSERT INTO users (email, mot_de_passe) VALUES (%s, %s)"
         values = (email, mot_de_passe)
         cursor.execute(insert_query, values)
         conn.commit()

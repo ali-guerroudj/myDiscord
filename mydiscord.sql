@@ -26,3 +26,4 @@ CREATE TABLE IF NOT EXISTS messages (
     FOREIGN KEY (utilisateur_id) REFERENCES users(id),
     FOREIGN KEY (salon_id) REFERENCES channels(id)
 );
+
