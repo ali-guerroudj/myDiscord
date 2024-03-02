@@ -59,6 +59,9 @@ class Client:
 
     def stop(self):
         self.running = False
+        self.win.after(100, self.close_window)
+
+    def close_window(self):
         self.win.destroy()
         self.sock.close()
         exit(0)
@@ -83,4 +86,3 @@ HOST = '127.0.0.1'
 PORT = 45678
 
 Client(HOST, PORT)
-
