@@ -1,6 +1,41 @@
 import pygame
 import mysql.connector
-from mysql.connector import connect, Error
+from mysql.connector import Error
+
+class Connexion:
+    def __init__(self):
+        self.conn = None
+
+    def connecter_bdd(self):
+        try:
+            self.conn = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="conan",  # Remplacez par votre mot de passe
+                database="mydiscord",
+                auth_plugin='mysql_native_password'
+            )
+            return self.conn
+        except Error as e:
+            print(f"Erreur de connexion à la base de données: {e}")
+            return None
+
+    def verifier_authentification(self, email, mot_de_passe):
+        if not self.conn:
+            print("La connexion à la base de données n'est pas établie.")
+            return
+
+        try:
+            cursor = self.conn.cursor()
+            select_query = "SELECT * FROM users WHERE email = %s AND password = %s"
+            cursor.execute(select_query, (email, mot_de_passe))
+            utilisateur = cursor.fetchone()
+            if utilisateur:
+                print("Authentification réussie !")
+            else:
+                print("Nom d'utilisateur ou mot de passe incorrect.")
+        except Error as e:
+            print(f"Erreur lors de la vérification de l'authentification: {e}")
 
 # Initialisation de Pygame
 pygame.init()
@@ -57,34 +92,8 @@ bouton_hauteur = 50
 couleur_bouton_normal = (50, 205, 50)  # Vert
 couleur_bouton_survol = (0, 255, 0)     # Vert clair
 
-# Fonction pour établir la connexion à la base de données
-def connecter_bdd():
-    try:
-        conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="conan",  # Remplacez par votre mot de passe
-            database="mydiscord",
-            auth_plugin='mysql_native_password'
-        )
-        return conn
-    except Error as e:
-        print(f"Erreur de connexion à la base de données: {e}")
-        return None
-
-# Fonction pour vérifier l'authentification de l'utilisateur
-def verifier_authentification(conn, email, mot_de_passe):
-    try:
-        cursor = conn.cursor()
-        select_query = "SELECT * FROM utilisateur WHERE Email = %s AND Mot_de_passe = %s"
-        cursor.execute(select_query, (email, mot_de_passe))
-        utilisateur = cursor.fetchone()
-        if utilisateur:
-            print("Authentification réussie !")
-        else:
-            print("Nom d'utilisateur ou mot de passe incorrect.")
-    except Error as e:
-        print(f"Erreur lors de la vérification de l'authentification: {e}")
+# Création de l'objet connexion
+connexion = Connexion()
 
 # Boucle principale du jeu
 launched = True
@@ -120,10 +129,10 @@ while launched:
                 print("Bouton de connexion cliqué !")  # Ici, vous pouvez ajouter votre logique de connexion
                 
                 # Établir une connexion à la base de données
-                conn = connecter_bdd()
+                conn = connexion.connecter_bdd()
                 if conn:
                     # Vérifier l'authentification de l'utilisateur
-                    verifier_authentification(conn, email_text, mdp_text)
+                    connexion.verifier_authentification(email_text, mdp_text)
                     # Fermer la connexion
                     conn.close()
 

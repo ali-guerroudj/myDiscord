@@ -2,7 +2,7 @@ import pygame
 import mysql.connector
 from mysql.connector import connect, Error
 
-class InscriptionWindow:
+class Inscription:
     def __init__(self):
         # Initialisation de Pygame
         pygame.init()
@@ -200,11 +200,8 @@ class InscriptionWindow:
 
 # Créer une instance de la classe et exécuter le programme
 if __name__ == "__main__":
-    app = InscriptionWindow()
+    app = Inscription()
     app.run()
-
-
-
 
 
 
