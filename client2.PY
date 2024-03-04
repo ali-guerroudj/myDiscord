@@ -4,6 +4,7 @@ import tkinter
 import tkinter.scrolledtext
 from tkinter import simpledialog
 import emoji
+import datetime
 
 HOST = '127.0.0.1'
 PORT = 45678
@@ -79,11 +80,20 @@ class Client:
                     if message_text not in messages_recus:
                         self.text_area.config(state="normal")
 
+                        # Obtenir la date et l'heure actuelles
+                        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        
+                        # Construire le message complet avec la date et l'heure
+                        message_with_time = f"[{current_time}] {message_text}"
+
                         self.text_area.tag_configure("right", justify="right")
                         self.text_area.insert(tkinter.END, message_text + "\n", "right")
 
                         self.text_area.tag_configure("left", justify="left")
                         self.text_area.insert(tkinter.END, "\n", "left")
+
+                           # Ajouter le message complet (avec la date, l'heure et le contenu) à la zone de texte
+                        self.text_area.insert(tkinter.END, message_with_time + "\n")
 
                         message_with_emoji = self.emoji_replace(message_text)
                         self.text_area.insert(tkinter.END, message_with_emoji)
@@ -92,7 +102,7 @@ class Client:
                         self.text_area.insert(tkinter.END, "\U0001F44D")
                         self.text_area.yview(tkinter.END)
                         self.text_area.config(state="disabled")
-                        messages_recus.add(message_text)  # Ajouter le message à l'ensemble des messages reçus
+                        messages_recus.add(message_with_time)  # Ajouter le message à l'ensemble des messages reçus
         except ConnectionAbortedError:
             break
         except Exception as e:
