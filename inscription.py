@@ -55,7 +55,7 @@ class Inscription:
 
         # Définition des propriétés du bouton
         self.bouton_x = 300
-        self.bouton_y = 450
+        self.bouton_y = 550
         self.bouton_largeur = 200
         self.bouton_hauteur = 50
         self.couleur_bouton_normal = (50, 205, 50)  # Vert
@@ -120,10 +120,10 @@ class Inscription:
 
                 # Gérer le focus sur les champs de saisie
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    first_name_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 40, 200, 30)
-                    last_name_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 100, 200, 30)
-                    email_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 160, 200, 30)
-                    password_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 220, 200, 30)
+                    first_name_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 87, 200, 30)
+                    last_name_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 136, 200, 30)
+                    email_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 225, 200, 30)
+                    password_rect = pygame.Rect(self.carré_x + 100, self.carré_y + 300, 200, 30)
                     if first_name_rect.collidepoint(event.pos):
                         self.active_field = 'first_name'
                     elif last_name_rect.collidepoint(event.pos):
@@ -159,33 +159,33 @@ class Inscription:
             self.window_surface.blit(text_connexion, (self.carré_x + 50, self.carré_y + 10))
 
             # Afficher les champs de saisie avec le texte saisi
-            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 40, 200, 30), 2)  # Champ Prénom
-            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 100, 200, 30), 2)  # Champ Nom
-            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 160, 200, 30), 2)  # Champ E-mail
-            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 220, 200, 30), 2)  # Champ Mot de passe
+            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 85, 200, 30), 2)  # Champ Prénom
+            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 140, 200, 30), 2)  # Champ Nom            LA
+            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 220, 200, 30), 2)  # Champ E-mail
+            pygame.draw.rect(self.window_surface, self.NOIR, (self.carré_x + 100, self.carré_y + 300, 200, 30), 2)  # Champ Mot de passe
 
             # Afficher le texte saisi dans le champ actif
             first_name_surface = self.font.render(self.first_name_text, True, self.NOIR)
-            self.window_surface.blit(first_name_surface, (self.carré_x + 105, self.carré_y + 45))
+            self.window_surface.blit(first_name_surface, (self.carré_x + 105, self.carré_y + 87))
 
             last_name_surface = self.font.render(self.last_name_text, True, self.NOIR)
-            self.window_surface.blit(last_name_surface, (self.carré_x + 105, self.carré_y + 105))
+            self.window_surface.blit(last_name_surface, (self.carré_x + 105, self.carré_y + 146))
 
             email_surface = self.font.render(self.email_text, True, self.NOIR)
-            self.window_surface.blit(email_surface, (self.carré_x + 105, self.carré_y + 165))
+            self.window_surface.blit(email_surface, (self.carré_x + 105, self.carré_y + 225))
 
             mdp_surface = self.font.render("*" * len(self.mdp_text), True, self.NOIR)  # Pour masquer le mot de passe
-            self.window_surface.blit(mdp_surface, (self.carré_x + 105, self.carré_y + 225))
+            self.window_surface.blit(mdp_surface, (self.carré_x + 105, self.carré_y + 310))
 
             # Afficher les labels des champs
             first_name_label = self.font.render("Prénom:", True, self.NOIR)
-            self.window_surface.blit(first_name_label, (self.carré_x + 50, self.carré_y + 10))
+            self.window_surface.blit(first_name_label, (self.carré_x + 50, self.carré_y + 50))
             last_name_label = self.font.render("Nom:", True, self.NOIR)
-            self.window_surface.blit(last_name_label, (self.carré_x + 50, self.carré_y + 70))
+            self.window_surface.blit(last_name_label, (self.carré_x + 50, self.carré_y + 110))
             email_label = self.font.render("E-mail:", True, self.NOIR)
-            self.window_surface.blit(email_label, (self.carré_x + 50, self.carré_y + 130))
+            self.window_surface.blit(email_label, (self.carré_x + 50, self.carré_y + 190))
             mdp_label = self.font.render("Mot de passe:", True, self.NOIR)
-            self.window_surface.blit(mdp_label, (self.carré_x + 50, self.carré_y + 190))
+            self.window_surface.blit(mdp_label, (self.carré_x + 50, self.carré_y + 260))
 
             # Dessiner le bouton de connexion
             pygame.draw.rect(self.window_surface, self.couleur_bouton_normal, (self.bouton_x, self.bouton_y, self.bouton_largeur, self.bouton_hauteur))
@@ -202,6 +202,13 @@ class Inscription:
 if __name__ == "__main__":
     app = Inscription()
     app.run()
+
+
+
+
+
+
+
 
 
 
